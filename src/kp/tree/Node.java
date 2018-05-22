@@ -26,6 +26,7 @@ class Node< T extends Comparable<T> >
                 if( value.compareTo( elem.get(i).value ) < 0 )
                 {
                     elem.get( i ).left.addValue( value );
+
                     return null;
                 }
             }

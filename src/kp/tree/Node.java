@@ -43,7 +43,8 @@ class Node< T extends Comparable<T> >
         }
         else // Dzielimy node na pół
         {
-            Node<T> newNode = new Node<T>( size, parent );
+            Node<T> newParent = new Node<>( size, parent );         // Nowy rodzic dwóch Node po podziale
+            Node<T> newNode = new Node<>( size, newParent );
             // Przepisujemy elementy do nowego Node od size/2 (zaokrąglone w górę)
             for( int i = (int) Math.ceil((double) size / 2); i < size; i++ )
             {
@@ -51,14 +52,12 @@ class Node< T extends Comparable<T> >
                 elem.remove( i );                               // Usuwamy dodany element ze starego Node
             }
             newNode.addValue( value );
-
-            Node<T> newParent = new Node<>( size, parent );         // Nowy rodzic dwóch Node po podziale
-            newParent.isLeaf = false;                           // Nowy rodzic nie jest już liściem, bo ma wskaźniki != null
             newParent.addValue( newNode.elem.get(0).value );    // Dodanie środkowego elementu do nowego rodzica
             newParent.elem.get( 0 ).left = this;                // Podpięcie lewego wskaźnika
             newParent.elem.get( 0 ).right = newNode;            // Podpięcie prawego wskaźnika
             this.parent = newParent;                                // Ustawienie nowych rodziców
             newNode.parent = newParent;
+            newParent.isLeaf = false;                           // Nowy rodzic nie jest już liściem, bo ma wskaźniki != null
             return newParent;
         }
     }

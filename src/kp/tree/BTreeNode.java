@@ -1,8 +1,8 @@
 package kp.tree;
 
-public class BTreeNode
+public class BTreeNode< T extends Comparable<T> >
 {
-    int keys[];     // Tablica kluczy.
+    Comparable<T> keys[];     // Tablica kluczy.
     int t;          // Minimalna ilość kluczy jaka może się znajdować w Wierzchołku.
     BTreeNode C[];  // Tablica dzieci.
     int n;          // Aktualna liczba kluczy.
@@ -15,30 +15,38 @@ public class BTreeNode
 
         // Zaalokowanie pamięci dla maksymalnej liczby możliwych kluczy
         // i tablica na Dzieci wierzchołka
-        keys = new int[ 2 * t - 1 ];
+        keys = new Comparable[ 2 * t - 1 ];
         C = new BTreeNode[ 2 * t ];
 
         // Inicjalizacja aktualnej liczby kluczy w wierzchołku
         n = 0;
     }
 
+//    T get(int i) {
+//        @SuppressWarnings("unchecked")
+//        final T e = (T) a[i];
+//        return e;
+//    }
+
     // Funkcja pomocnicza, któa zwraca indeks pierwszego klucza, który jest
     // większy lub równy 'k'
-    int findKey( int k )
+    int findKey( T k )
     {
         int idx = 0;
-        while( idx < n && keys[ idx ] < k )
+        //while( idx < n && keys[ idx ] < k )
+        while( idx < n && keys[ idx ].compareTo( k ) < 0 )
             idx++;
         return idx;
     }
 
     // Funkcja do usuwania klucza 'k' z poddrzewa zakorzenionego w tym wierzchołku.
-    void remove( int k )
+    void remove( T k )
     {
         int idx = findKey( k );
 
         // Klucz do usunięcia znajduje się w tym wierzchołku.
-        if( idx < n && keys[ idx ] == k )
+        //if( idx < n && keys[ idx ] == k )
+        if( idx < n && keys[ idx ].compareTo( k ) == 0 )
         {
             // Jeśli wierzchołek jest liściem, wywoływane jest 'removeFromLeaf'
             // w przeciwnym przypadku 'removeFromNonLeaf'
@@ -88,17 +96,17 @@ public class BTreeNode
     // Funkcja do usuwania klucza o indeksie 'idx' z wierzchołka, który NIE jest liściem.
     void removeFromNonLeaf( int idx )
     {
-        int k = keys[ idx ];
+        T k = (T)keys[ idx ];
 
         if( C[ idx ].n >= t )
         {
-            int pred = getPred( idx );
+            T pred = getPred( idx );
             keys[ idx ] = pred;
             C[ idx ].remove( pred );
         }
         else if( C[ idx + 1 ].n >= t )
         {
-            int succ = getSucc( idx );
+            T succ = getSucc( idx );
             keys[ idx ] = succ;
             C[ idx + 1 ].remove( succ );
         }
@@ -110,18 +118,18 @@ public class BTreeNode
     }
 
     // Funkcja zwracająca poprzednika z keys[idx]
-    int getPred( int idx )
+    T getPred( int idx )
     {
         // Poruszamy się prawymi wskaźnikami, aż nie dotrzemy do liścia.
-        BTreeNode cur = C[ idx ];
+        BTreeNode<T> cur = C[ idx ];
         while( !cur.leaf )
             cur = cur.C[ cur.n ];
 
         // Zwraca ostatni klucz liścia.
-        return cur.keys[ cur.n - 1 ];
+        return (T)cur.keys[ cur.n - 1 ];
     }
 
-    int getSucc( int idx )
+    T getSucc( int idx )
     {
         // Poruszamy się lewymi wierzchołkami, aż nie dotrzemy do liścia.
         BTreeNode cur = C[ idx + 1 ];
@@ -129,10 +137,10 @@ public class BTreeNode
             cur = cur.C[ 0 ];
 
         // Zwróc pierwszy klucz liścia.
-        return cur.keys[ 0 ];
+        return (T)cur.keys[ 0 ];
     }
 
-    // Funkcja wypełniająca dziecko, któe ma mniej niż t-1 kluczy
+    // Funkcja wypełniająca dziecko, które ma mniej niż t-1 kluczy
     void fill( int idx )
     {
         // Jeśli poprzednie dzieclko (C[idx-1]) ma więcej niż t-1 kluczy, zabierz klucz od tego dziecka.
@@ -248,7 +256,7 @@ public class BTreeNode
 
     // Funkcja pomocnicza, wstawiająca klucz do wierzchołka.
     // Wierzchołek NIE może być pełny, gdy ta funkcja jest wywołana.
-    void insertNonFull( int k )
+    void insertNonFull( T k )
     {
         // Indeks skrajnie prawego elementu
         int i = n - 1;
@@ -258,7 +266,8 @@ public class BTreeNode
         {
             // (1) Szukanie miejsca, w którym można umieścić klucz.
             // (2) Przesuwanie pozostałych elementów o jedno miejsce w prawo.
-            while( i >= 0 && keys[ i ] > k )
+            //while( i >= 0 && keys[ i ] > k )
+            while( i >= 0 && keys[ i ].compareTo( k ) > 0 )
             {
                 keys[ i + 1 ] = keys[ i ];
                 i--;
@@ -271,7 +280,8 @@ public class BTreeNode
         else // Jeśli wierzchołek nie jest liściem
         {
             // Znajdź dziecko, do którego należy włożyć klucz
-            while( i >= 0 && keys[ i ] > k )
+            //while( i >= 0 && keys[ i ] > k )
+            while( i >= 0 && keys[ i ].compareTo( k ) > 0 )
                 i--;
 
             // Sprawdź czy znalezione dziecko ma już maksymalną liczbę kluczy
@@ -279,7 +289,8 @@ public class BTreeNode
             {
                 // Jeśli dzieciak jest pełny, to go podziel
                 splitChild( i + 1, C[ i + 1 ] );
-                if( keys[ i + 1 ] < k )
+                //if( keys[ i + 1 ] < k )
+                if( keys[ i + 1 ].compareTo( k ) < 0 )
                     i++;
             }
             C[ i + 1 ].insertNonFull( k );
@@ -336,7 +347,7 @@ public class BTreeNode
             // wypisuj jego dzieci
             if( leaf == false )
                 C[ i ].traverse();
-            System.out.print( " " + keys[ i ] );
+            System.out.print( " " + keys[ i ].toString() );
         }
 
         // Wypisz poddrzewo zakorzenione w srajnie prawym wskaźniku
@@ -344,15 +355,17 @@ public class BTreeNode
             C[ i ].traverse();
     }
 
-    BTreeNode search( int k )
+    BTreeNode search( T k )
     {
         // Znajdź pierwszy klucz większy lub równy 'k'
         int i = 0;
-        while( i < n && k > keys[ i ] )
+        //while( i < n && keys[ i ] < k )
+        while( i < n && keys[ i ].compareTo( k ) < 0 )
             i++;
 
         // Jeśli znaleziony klucz jest równy 'k', zwróć ten wierzchołek.
-        if( keys[ i ] == k )
+        //if( keys[ i ] == k )
+        if( keys[ i ].compareTo( k ) == 0 )
             return this;
 
         // Jeśli nie znaleziono tutaj klucza, a ten wierzchołek jest liściem.

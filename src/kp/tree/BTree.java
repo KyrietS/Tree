@@ -1,8 +1,8 @@
 package kp.tree;
 
-public class BTree
+public class BTree< T extends Comparable<T> >
 {
-    BTreeNode root;     // Wskaźnik na korzeń
+    BTreeNode<T> root;     // Wskaźnik na korzeń
     int t;              // Minimalna ilość elementów w wierzchołku
 
     public BTree( int t )
@@ -19,7 +19,7 @@ public class BTree
     }
 
     // Funkcja szukająca klucza w drzewie
-    public BTreeNode search( int k )
+    public BTreeNode search( T k )
     {
         if( root == null )
             return null;
@@ -28,13 +28,13 @@ public class BTree
     }
 
     // Funkcja wkładająca klucz do drzewa
-    public void insert( int k )
+    public void insert( T k )
     {
         // Jeśli drzewo jest puste
         if( root == null )
         {
             // Zaalokuj pamięć na nowy korzeń
-            root = new BTreeNode( t, true );
+            root = new BTreeNode<>( t, true );
             root.keys[ 0 ] = k;   // Umieść klucz do nowo-utworzonego korzenia.
             root.n = 1;           // Zaktualizuj liczbę kluczy w korzeniu.
         }
@@ -55,7 +55,9 @@ public class BTree
                 // Nowy korzeń ma teraz dwójkę dzieci. Decydujemy które z dzieci
                 // będzie miało w sobie nowy (umieszczany) klucz.
                 int i = 0;
-                if( s.keys[ 0 ] < k )
+
+                //if( s.keys[ 0 ] < k )
+                if( s.keys[ 0 ].compareTo( k ) < 0 )
                     i++;
                 s.C[ i ].insertNonFull( k );
 
@@ -70,7 +72,7 @@ public class BTree
     }
 
     // Funkcja usuwająca klucz z drzewa.
-    public void remove( int k )
+    public void remove( T k )
     {
         if( root == null )
         {

@@ -1,10 +1,46 @@
 package kp.tree;
 
+import java.io.IOException;
+
+class Drzewo< T extends Comparable<T> >
+{
+    void compare( T a, T b )
+    {
+        if( a.compareTo( b ) < 0 )
+            System.out.println( a.toString() + " < " + b.toString() );
+        if( a.compareTo( b ) == 0 )
+            System.out.println( a.toString() + " = " + b.toString() );
+        if( a.compareTo( b ) > 0 )
+            System.out.println( a.toString() + " > " + b.toString() );
+    }
+}
+
 public class Main {
 
     public static void main(String[] args)
     {
-        BTree t = new BTree( 3 );
+//        Drzewo< Integer > d = new Drzewo<>();
+//        d.compare( 1, 2 );
+//        d.compare( 2, 1 );
+//        d.compare( 3, 3 );
+//
+//        try{ System.in.read(); } catch( IOException ignore ){}
+
+        BTree<String> a = new BTree<>( 3 );
+        a.insert( "G" );
+        a.insert( "F" );
+        a.insert( "E" );
+        a.insert( "D" );
+        a.insert( "C" );
+        a.insert( "B" );
+        a.insert( "A" );
+        a.remove( "D" );
+        System.out.println( "Traversal drzewa z napisami:" );
+        a.traverse();
+        System.out.println();
+
+
+        BTree<Integer> t = new BTree<>( 3 );
         t.insert( 1 );
         t.insert( 3 );
         t.insert( 7 );

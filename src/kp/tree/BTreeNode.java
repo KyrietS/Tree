@@ -14,7 +14,7 @@ public class BTreeNode< T extends Comparable<T> >
         this.leaf = leaf;
 
         // Zaalokowanie pamięci dla maksymalnej liczby możliwych kluczy
-        // i tablica na Dzieci wierzchołka
+        // i tablica na Dzieci wierzchołka.
         keys = new Comparable[ 2 * t - 1 ];
         C = new BTreeNode[ 2 * t ];
 

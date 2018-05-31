@@ -26,6 +26,7 @@ public class Main {
 //
 //        try{ System.in.read(); } catch( IOException ignore ){}
 
+
         BTree<String> a = new BTree<>( 3 );
         a.insert( "G" );
         a.insert( "F" );

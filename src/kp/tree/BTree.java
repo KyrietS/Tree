@@ -27,7 +27,7 @@ public class BTree< T extends Comparable<T> >
             return root.search( k );
     }
 
-    // Funkcja wkładająca klucz do drzewa
+    // Funkcja wkładająca klucz do drzewa.
     public void insert( T k )
     {
         // Jeśli drzewo jest puste
